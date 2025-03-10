@@ -6,11 +6,9 @@ const TodoList = () => {
   const [inputValue, setInputValue] = useState("");
 
   const addTask = () => {
-    if (inputValue.trim() !== "") {
       setTasks([...tasks, { text: inputValue, completed: false }]);
       setInputValue("");
-    }
-  };
+    };
 
   const removeTask = (index) => {
     setTasks(tasks.filter((_, i) => i !== index));
@@ -29,9 +27,9 @@ const TodoList = () => {
         />
         <ul>
           {tasks.map((task, index) => (
-            <li key={index} style={{ textDecoration: task.completed ? "line-through" : "none" }}>
+            <li key={index}>
               {task.text}
-              <button onClick={() => removeTask(index)}>❌</button>
+              <button className="removeButton" onClick={() => removeTask(index)}>❌</button>
             </li>
           ))}
         </ul>
