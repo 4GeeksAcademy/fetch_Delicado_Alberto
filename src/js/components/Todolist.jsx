@@ -6,7 +6,7 @@ const TodoList = () => {
   const [inputValue, setInputValue] = useState("");
 
   const addTask = () => {
-      setTasks([...tasks, { text: inputValue, completed: false }]);
+      setTasks([...tasks, {text: inputValue}]);
       setInputValue("");
     };
 
