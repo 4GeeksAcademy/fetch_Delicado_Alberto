@@ -19,13 +19,25 @@ const TodoList = () => {
   }, []);
 
   const updateTasksOnServer = () => {
-    fetch(API_URL+"/todos/alberto", {
+    fetch(`${API_URL}/todos/alberto`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ "label": inputValue, "is_done": false }),
+      body: JSON.stringify({ label: inputValue, is_done: false }),
     })
-      .then((response) => response.json())
-      .then((data) => setTasks([...tasks, data]))
+      .then((response) => {
+        if (!response.ok) throw new Error("Error en el POST");
+        return response.json();
+      })
+      .then((data) => {
+        // En vez de añadir directamente, volvemos a obtener la lista actualizada
+        return fetch(`${API_URL}/users/alberto`);
+      })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && Array.isArray(data.todos)) {
+          setTasks(data.todos);
+        }
+      })
       .catch((error) => console.error("Error al actualizar tareas:", error));
   };
 
@@ -60,14 +72,19 @@ const TodoList = () => {
           onKeyDown={(e) => e.key === "Enter" && addTask()}
           placeholder="Nueva tarea..."
         />
-        <ul>
-          {tasks.map((task, index) => (
-            <li key={index}>
-              {task.label}
-              <button className="removeButton" onClick={() => removeTasksOnServer(task.id)}>❌</button>
-            </li>
-          ))}
-        </ul>
+  <ul>
+    {tasks.length === 0 ? (
+      <li className="no-tasks">¡No hay tareas pendientes!</li>
+    ) : (
+      tasks.map((task, index) => (
+        <li key={task.id || index}>
+          {task.label}
+          <button className="removeButton" onClick={() => removeTasksOnServer(task.id)}>❌</button>
+        </li>
+      ))
+    )}
+  </ul>
+
         <footer style={{ marginTop: "20px", fontWeight: "bold" }}>
           {tasks.length} items left
         </footer>
