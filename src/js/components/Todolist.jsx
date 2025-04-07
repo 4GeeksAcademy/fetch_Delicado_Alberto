@@ -29,7 +29,6 @@ const TodoList = () => {
         return response.json();
       })
       .then((data) => {
-        // En vez de añadir directamente, volvemos a obtener la lista actualizada
         return fetch(`${API_URL}/users/alberto`);
       })
       .then((res) => res.json())
